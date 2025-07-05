@@ -3,17 +3,24 @@ import {
     getUser,
     updateUser,
     deleteUser,
-    createUser,
+    register,
+    login,
+    logout,
     getAllUsers
 } from '../controllers/user.controller.js';
+import { verifyToken } from "../libs/middleware.js";
 
 const router = express.Router();
 
-// CRUD operations
-router.get('/', getAllUsers);           // Get all users
-router.get('/:id', getUser);           // Get specific user
-router.post('/create', createUser);          // Create new user
-router.patch('/update/:id', updateUser);      // Update user (simplified path)
-router.delete('/delete/:id', deleteUser);     // Delete user (simplified path)
+// Auth routes
+router.post('/register', register);        // POST /api/v1/users/register
+router.post('/login', login);             // POST /api/v1/users/login
+router.post('/logout', logout);           // POST /api/v1/users/logout
+
+// CRUD routes
+router.get('/',verifyToken, getAllUsers);             // GET /api/v1/users
+router.get('/:id',verifyToken, getUser);             // GET /api/v1/users/:id
+router.patch('/update/:id',verifyToken, updateUser);  // PATCH /api/v1/users/update/:id
+router.delete('/delete/:id',verifyToken, deleteUser); // DELETE /api/v1/users/delete/:id
 
 export default router;

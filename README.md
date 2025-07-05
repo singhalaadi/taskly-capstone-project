@@ -24,7 +24,7 @@ npm run dev
 
 ## API Endpoints
 - `GET /api/v1/users` - Get all users
-- `POST /api/v1/users` - Create user
+- `POST /api/v1/users/create` - Create user
 - `PATCH /api/v1/users/update/:id` - Update user
 - `DELETE /api/v1/users/delete/:id` - Delete user
 

@@ -1,6 +1,8 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import toast from 'react-hot-toast'
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { API_BASE_URL } from "../util.js";
+import { useUser } from "../context/UserContext.js";
 import {
   FormControl,
   Input,
@@ -11,135 +13,248 @@ import {
   Heading,
   Stack,
   FormErrorMessage,
+  Container,
+  VStack,
+  HStack,
+  Icon,
+  InputGroup,
+  InputLeftElement,
+  useColorModeValue,
 } from "@chakra-ui/react";
+import { FaUser, FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
 
 export default function Register() {
+  const navigate = useNavigate();
+  const { updateUser } = useUser();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm();
 
+  // Color mode values
+  const bgGradient = useColorModeValue(
+    "linear(135deg, blue.400, purple.600)",
+    "linear(135deg, blue.600, purple.800)"
+  );
+  const cardBg = useColorModeValue("white", "gray.800");
+  const textColor = useColorModeValue("gray.600", "gray.300");
+
   const onSubmit = async (data) => {
-    // Handle form submission
-    console.log('Form data:', data);
-    
+    console.log("Form data:", data);
+
     try {
-    //Send data to your API
-      const response = await fetch('http://localhost:3000/api/v1/users/create', {
-        method: 'POST',
+      const response = await fetch(`${API_BASE_URL}/users/register`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
+        credentials: "include",
       });
-      
+
       if (response.ok) {
-        console.log('User registered successfully!');
-        toast.success('Registration successful!');
-        //Redirect to login or dashboard
+        const result = await response.json();
+        console.log("User registered successfully!");
+        toast.success("Welcome to Taskly! 🎉");
+        updateUser(result.user);
+        navigate("/profile");
       } else {
-        toast.error('Redgistration failed!');
-        console.error('Registration failed');
+        const errorData = await response.json();
+        toast.error(errorData.error || "Registration failed!");
+        console.error("Registration failed");
       }
     } catch (error) {
-        toast.error('Something went wrong!');
-      console.error('Error:', error);
+      toast.error("Something went wrong!");
+      console.error("Error:", error);
     }
   };
 
   return (
-    <Box p="3" maxW="lg" mx="auto">
-      <Heading
-        as="h1"
-        textAlign="center"
-        fontSize="3xl"
-        fontWeight="semibold"
-        my="7"
-      >
-        Create an Account
-      </Heading>
-      
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Stack gap="4">
-          {/* Username Field */}
-          <FormControl isInvalid={errors.username}>
-            <Input
-              id="username"
-              type="text"
-              placeholder="Username"
-              {...register('username', { 
-                required: 'Username is required',
-                minLength: {
-                  value: 3,
-                  message: 'Username must be at least 3 characters'
-                }
-              })}
-            />
-            <FormErrorMessage>
-              {errors.username && errors.username.message}
-            </FormErrorMessage>
-          </FormControl>
+    <Box
+      h="100vh" // Changed from minH="100vh" to fit viewport better
+      bgGradient={bgGradient}
+      display="flex"
+      alignItems="center"
+      justifyContent="center" // Added for better centering
+      py="8" // Reduced from py="12"
+    >
+      <Container maxW="md">
+        <Box
+          bg={cardBg}
+          borderRadius="2xl"
+          boxShadow="2xl"
+          p="6" // Reduced from p="8" for more compact design
+          transform="scale(1)"
+          _hover={{ transform: "scale(1.02)" }}
+          transition="all 0.2s"
+          maxH="90vh" // Prevent exceeding viewport
+          overflowY="auto" // Add scroll if needed
+        >
+          {/* Header - More Compact */}
+          <VStack spacing="4" mb="6">
+            {" "}
+            {/* Reduced spacing */}
+            <Box
+              bg="blue.500"
+              p="3" // Reduced from p="4"
+              borderRadius="full"
+              color="white"
+            >
+              <Icon as={FaUserPlus} boxSize="6" />{" "}
+              {/* Reduced from boxSize="8" */}
+            </Box>
+            <VStack spacing="1">
+              {" "}
+              {/* Reduced spacing */}
+              <Heading size="md" textAlign="center">
+                {" "}
+                {/* Reduced from size="lg" */}
+                Join Taskly
+              </Heading>
+              <Text color={textColor} textAlign="center" fontSize="sm">
+                {" "}
+                {/* Added fontSize="sm" */}
+                Create your account and start organizing
+              </Text>
+            </VStack>
+          </VStack>
 
-          {/* Email Field */}
-          <FormControl isInvalid={errors.email}>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Email"
-              {...register('email', { 
-                required: 'Email is required',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Invalid email address'
-                }
-              })}
-            />
-            <FormErrorMessage>
-              {errors.email && errors.email.message}
-            </FormErrorMessage>
-          </FormControl>
+          {/* Form */}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Stack spacing="4">
+              {" "}
+              {/* Reduced from spacing="5" */}
+              {/* Username Field */}
+              <FormControl isInvalid={errors.username}>
+                <InputGroup>
+                  <InputLeftElement>
+                    <Icon as={FaUser} color="gray.400" />
+                  </InputLeftElement>
+                  <Input
+                    id="username"
+                    type="text"
+                    placeholder="Enter your username"
+                    size="md" // Changed from size="lg"
+                    borderRadius="lg"
+                    focusBorderColor="blue.500"
+                    _hover={{ borderColor: "blue.300" }}
+                    transition="all 0.2s"
+                    {...register("username", {
+                      required: "Username is required",
+                      minLength: {
+                        value: 3,
+                        message: "Username must be at least 3 characters",
+                      },
+                    })}
+                  />
+                </InputGroup>
+                <FormErrorMessage fontSize="xs">
+                  {" "}
+                  {/* Added fontSize="xs" */}
+                  {errors.username && errors.username.message}
+                </FormErrorMessage>
+              </FormControl>
+              {/* Email Field */}
+              <FormControl isInvalid={errors.email}>
+                <InputGroup>
+                  <InputLeftElement>
+                    <Icon as={FaEnvelope} color="gray.400" />
+                  </InputLeftElement>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    size="md" // Changed from size="lg"
+                    borderRadius="lg"
+                    focusBorderColor="blue.500"
+                    _hover={{ borderColor: "blue.300" }}
+                    transition="all 0.2s"
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: "Invalid email address",
+                      },
+                    })}
+                  />
+                </InputGroup>
+                <FormErrorMessage fontSize="xs">
+                  {" "}
+                  {/* Added fontSize="xs" */}
+                  {errors.email && errors.email.message}
+                </FormErrorMessage>
+              </FormControl>
+              {/* Password Field */}
+              <FormControl isInvalid={errors.password}>
+                <InputGroup>
+                  <InputLeftElement>
+                    <Icon as={FaLock} color="gray.400" />
+                  </InputLeftElement>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Create a password"
+                    size="md" // Changed from size="lg"
+                    borderRadius="lg"
+                    focusBorderColor="blue.500"
+                    _hover={{ borderColor: "blue.300" }}
+                    transition="all 0.2s"
+                    {...register("password", {
+                      required: "Password is required",
+                      minLength: {
+                        value: 6,
+                        message: "Password must be at least 6 characters",
+                      },
+                    })}
+                  />
+                </InputGroup>
+                <FormErrorMessage fontSize="xs">
+                  {" "}
+                  {/* Added fontSize="xs" */}
+                  {errors.password && errors.password.message}
+                </FormErrorMessage>
+              </FormControl>
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                colorScheme="blue"
+                size="md" // Changed from size="lg"
+                borderRadius="lg"
+                isLoading={isSubmitting}
+                loadingText="Creating Account..."
+                _hover={{ transform: "translateY(-2px)", shadow: "lg" }}
+                transition="all 0.2s"
+                leftIcon={<Icon as={FaUserPlus} />}
+              >
+                Create Account
+              </Button>
+            </Stack>
+          </form>
 
-          {/* Password Field */}
-          <FormControl isInvalid={errors.password}>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Password"
-              {...register('password', { 
-                required: 'Password is required',
-                minLength: {
-                  value: 6,
-                  message: 'Password must be at least 6 characters'
-                }
-              })}
-            />
-            <FormErrorMessage>
-              {errors.password && errors.password.message}
-            </FormErrorMessage>
-          </FormControl>
-
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            colorScheme="blue"
-            size="lg"
-            isLoading={isSubmitting}
-            loadingText="Creating Account..."
-          >
-            Create Account
-          </Button>
-        </Stack>
-      </form>
-
-      <Flex gap="2" mt="5" justifyContent="center">
-        <Text>Have an account?</Text>
-        <Link to="/login">
-          <Text as="span" color="blue.400" _hover={{ textDecoration: 'underline' }}>
-            Sign in
-          </Text>
-        </Link>
-      </Flex>
+          {/* Footer */}
+          <Box mt="4" textAlign="center">
+            {" "}
+            {/* Reduced from mt="6" */}
+            <Text color={textColor} fontSize="sm">
+              {" "}
+              {/* Added fontSize="sm" */}
+              Already have an account?{" "}
+              <Link as={Link} to="/login">
+                <Text
+                  as="span"
+                  color="blue.500"
+                  fontWeight="semibold"
+                  _hover={{ textDecoration: "underline", color: "blue.600" }}
+                  transition="all 0.2s"
+                >
+                  Sign in here
+                </Text>
+              </Link>
+            </Text>
+          </Box>
+        </Box>
+      </Container>
     </Box>
   );
 }

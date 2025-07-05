@@ -6,7 +6,7 @@ const users = [
         username: "aadi",
         email: "aadi12@gmail.com",
         password: "aadi123",
-        avatar: '/assets/default-user-avatar.png',
+        avatar: `${process.env.SERVER_URL || 'http://localhost:3000'}/assets/default-user-avatar.png`,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     },
@@ -14,7 +14,7 @@ const users = [
         username: "john",
         email: "john26@gmail.com",
         password: "john123",
-        avatar: '/assets/default-user-avatar.png',
+        avatar: `${process.env.SERVER_URL || 'http://localhost:3000'}/assets/default-user-avatar.png`,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     },
@@ -22,7 +22,7 @@ const users = [
         username: "jane",
         email: "jane45@gmail.com",
         password: "jane231",
-        avatar: '/assets/default-user-avatar.png',
+        avatar: `${process.env.SERVER_URL || 'http://localhost:3000'}/assets/default-user-avatar.png`,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     },
@@ -30,7 +30,7 @@ const users = [
         username: "doe",
         email: "doe67@gmail.com",
         password: "doe234",
-        avatar: '/assets/default-user-avatar.png',
+        avatar: `${process.env.SERVER_URL || 'http://localhost:3000'}/assets/default-user-avatar.png`,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     }
@@ -72,8 +72,8 @@ async function seedDatabase() {
         const db = await dbConnect();
         
         // Clear existing data
-        // await db.collection('users').deleteMany({});
-        // await db.collection('tasks').deleteMany({});
+        await db.collection('users').deleteMany({});
+        await db.collection('tasks').deleteMany({});
         
         // Seeding Users
         let collection = db.collection('users');

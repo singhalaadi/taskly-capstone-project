@@ -37,3 +37,4 @@ build/
 .tmp/
 .cache/
 .cache_ggshield
+.gitguardian.yaml
