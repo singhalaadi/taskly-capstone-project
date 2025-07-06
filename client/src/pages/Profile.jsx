@@ -1,11 +1,12 @@
 import { useForm, Controller } from "react-hook-form";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "../context/UserContext.js";
-import { API_BASE_URL } from "../util.js";
+import { API_BASE_URL } from "../utils/api.js";
 import DeleteConfirmation from "../components/DeleteConfirmation.jsx";
 import { AvatarUploader } from "../components/AvatarUploader.jsx";
+import ProfileSkeleton from "../_skeletons/ProfileSkeleton.jsx";
 import {
   Box,
   Heading,
@@ -17,7 +18,6 @@ import {
   Text,
   FormErrorMessage,
   VStack,
-  HStack,
   Container,
   useColorModeValue,
   useDisclosure,
@@ -35,6 +35,7 @@ export default function Profile() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Color mode values
   const bgColor = useColorModeValue("gray.50", "gray.900");
@@ -59,9 +60,30 @@ export default function Profile() {
 
   const password = watch("password");
 
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [user, navigate]);
+
+  if (loading && user) {
+    return <ProfileSkeleton />;
+  }
+
+  if (!user) {
+    return null;
+  }
+
   // Check if user is newly registered
   const isNewUser =
-    user?.createdAt && new Date() - new Date(user.createdAt) < 5 * 60 * 1000; // 5 minutes
+    user?.createdAt && new Date() - new Date(user.createdAt) < 5 * 60 * 1000;
 
   // Function to upload file to Cloudinary
   const handleFileUpload = async (files) => {
@@ -82,14 +104,13 @@ export default function Profile() {
       }
     } catch (error) {
       console.log(error);
-      throw error; 
+      throw error;
     }
   };
 
   const doSubmit = async (values) => {
     let toastId;
     try {
-      // Handle file upload if new files are selected
       if (files.length > 0) {
         toastId = toast.loading("Uploading image...");
         const newUrl = await handleFileUpload(files);
@@ -99,14 +120,12 @@ export default function Profile() {
         }
       }
 
-      // Start profile update
       if (!toastId) {
         toastId = toast.loading("Updating profile...");
       } else {
         toast.loading("Updating profile...", { id: toastId });
       }
 
-      // Remove empty password fields
       const submitData = { ...values };
       if (!submitData.password) {
         delete submitData.password;
@@ -129,7 +148,7 @@ export default function Profile() {
       if (res.status === 200) {
         resetField("password");
         resetField("confirmPassword");
-        setFiles([]); // Clear files after successful update
+        setFiles([]);
         updateUser({ ...user, ...submitData });
         toast.success("Profile Updated Successfully! 🎉", { id: toastId });
       } else {
@@ -188,24 +207,29 @@ export default function Profile() {
     }
   };
 
-  // If no user, redirect to login
-  if (!user) {
-    navigate("/login");
-    return null;
-  }
-
   return (
-    <Box minH="100vh" bg={bgColor} py="8">
-      <Container maxW="lg">
-        <VStack spacing="8">
+    <Box minH="100vh" bg={bgColor} py={{ base: "4", md: "8" }}>
+      <Container
+        maxW={{ base: "full", sm: "md", lg: "lg" }}
+        px={{ base: "4", sm: "6" }}
+      >
+        <VStack spacing={{ base: "6", md: "8" }}>
           {/* Header */}
-          <VStack spacing="4">
-            <Heading size="xl" textAlign="center">
+          <VStack spacing={{ base: "3", md: "4" }} textAlign="center">
+            <Heading
+              size={{ base: "lg", md: "xl" }}
+              px={{ base: "4", md: "0" }}
+              lineHeight="shorter"
+            >
               {isNewUser
-                ? `Welcome to Taskly, ${user.username}! 🎉`
+                ? `Welcome to Taskzy, ${user.username}! 🎉`
                 : `Welcome back, ${user.username}! 👋`}
             </Heading>
-            <Text color={textColor} textAlign="center">
+            <Text
+              color={textColor}
+              fontSize={{ base: "sm", md: "md" }}
+              px={{ base: "4", md: "0" }}
+            >
               {isNewUser
                 ? "Complete your profile to get started"
                 : "Manage your profile and account settings"}
@@ -215,19 +239,20 @@ export default function Profile() {
           {/* Profile Form */}
           <Box
             bg={cardBg}
-            borderRadius="xl"
-            boxShadow="lg"
-            p="8"
+            borderRadius={{ base: "lg", md: "xl" }}
+            boxShadow={{ base: "md", md: "lg" }}
+            p={{ base: "6", md: "8" }}
             w="full"
-            maxW="md"
+            maxW={{ base: "full", sm: "md" }}
+            mx="auto"
           >
-            <VStack spacing="6">
-              <Heading size="md" textAlign="center">
+            <VStack spacing={{ base: "5", md: "6" }}>
+              <Heading size={{ base: "sm", md: "md" }} textAlign="center">
                 Update Profile
               </Heading>
 
               <form onSubmit={handleSubmit(doSubmit)} style={{ width: "100%" }}>
-                <Stack spacing="4">
+                <Stack spacing={{ base: "4", md: "4" }}>
                   {/* Avatar Upload */}
                   <Controller
                     name="avatar"
@@ -244,12 +269,16 @@ export default function Profile() {
 
                   {/* Username */}
                   <FormControl isInvalid={errors.username}>
-                    <FormLabel fontSize="sm" fontWeight="medium">
+                    <FormLabel
+                      fontSize={{ base: "sm", md: "sm" }}
+                      fontWeight="medium"
+                    >
                       Username
                     </FormLabel>
                     <Input
                       placeholder="Enter your username"
-                      size="lg"
+                      size={{ base: "md", md: "lg" }}
+                      fontSize={{ base: "md", md: "md" }}
                       {...register("username", {
                         required: "Username is required",
                         minLength: {
@@ -258,20 +287,24 @@ export default function Profile() {
                         },
                       })}
                     />
-                    <FormErrorMessage>
+                    <FormErrorMessage fontSize="xs">
                       {errors.username && errors.username.message}
                     </FormErrorMessage>
                   </FormControl>
 
                   {/* Email */}
                   <FormControl isInvalid={errors.email}>
-                    <FormLabel fontSize="sm" fontWeight="medium">
+                    <FormLabel
+                      fontSize={{ base: "sm", md: "sm" }}
+                      fontWeight="medium"
+                    >
                       Email
                     </FormLabel>
                     <Input
                       type="email"
                       placeholder="Enter your email"
-                      size="lg"
+                      size={{ base: "md", md: "lg" }}
+                      fontSize={{ base: "md", md: "md" }}
                       {...register("email", {
                         required: "Email is required",
                         pattern: {
@@ -280,16 +313,24 @@ export default function Profile() {
                         },
                       })}
                     />
-                    <FormErrorMessage>
+                    <FormErrorMessage fontSize="xs">
                       {errors.email && errors.email.message}
                     </FormErrorMessage>
                   </FormControl>
 
                   {/* New Password */}
                   <FormControl isInvalid={errors.password}>
-                    <FormLabel fontSize="sm" fontWeight="medium">
+                    <FormLabel
+                      fontSize={{ base: "sm", md: "sm" }}
+                      fontWeight="medium"
+                    >
                       New Password{" "}
-                      <Text as="span" color="gray.500" fontSize="xs">
+                      <Text
+                        as="span"
+                        color="gray.500"
+                        fontSize={{ base: "xs", md: "xs" }}
+                        display={{ base: "block", sm: "inline" }}
+                      >
                         (leave blank to keep current)
                       </Text>
                     </FormLabel>
@@ -297,7 +338,9 @@ export default function Profile() {
                       <Input
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter new password"
-                        size="lg"
+                        size={{ base: "md", md: "lg" }}
+                        fontSize={{ base: "md", md: "md" }}
+                        pr="12"
                         {...register("password", {
                           minLength: {
                             value: 6,
@@ -305,7 +348,7 @@ export default function Profile() {
                           },
                         })}
                       />
-                      <InputRightElement h="12">
+                      <InputRightElement h={{ base: "10", md: "12" }}>
                         <IconButton
                           aria-label={
                             showPassword ? "Hide password" : "Show password"
@@ -317,28 +360,33 @@ export default function Profile() {
                         />
                       </InputRightElement>
                     </InputGroup>
-                    <FormErrorMessage>
+                    <FormErrorMessage fontSize="xs">
                       {errors.password && errors.password.message}
                     </FormErrorMessage>
                   </FormControl>
 
-                  {/* Confirm Password - Only show if password is entered */}
+                  {/* Confirm Password */}
                   {password && (
                     <FormControl isInvalid={errors.confirmPassword}>
-                      <FormLabel fontSize="sm" fontWeight="medium">
+                      <FormLabel
+                        fontSize={{ base: "sm", md: "sm" }}
+                        fontWeight="medium"
+                      >
                         Confirm New Password
                       </FormLabel>
                       <InputGroup>
                         <Input
                           type={showConfirmPassword ? "text" : "password"}
                           placeholder="Confirm new password"
-                          size="lg"
+                          size={{ base: "md", md: "lg" }}
+                          fontSize={{ base: "md", md: "md" }}
+                          pr="12"
                           {...register("confirmPassword", {
                             validate: (value) =>
                               value === password || "Passwords do not match",
                           })}
                         />
-                        <InputRightElement h="12">
+                        <InputRightElement h={{ base: "10", md: "12" }}>
                           <IconButton
                             aria-label={
                               showConfirmPassword
@@ -358,7 +406,7 @@ export default function Profile() {
                           />
                         </InputRightElement>
                       </InputGroup>
-                      <FormErrorMessage>
+                      <FormErrorMessage fontSize="xs">
                         {errors.confirmPassword &&
                           errors.confirmPassword.message}
                       </FormErrorMessage>
@@ -369,11 +417,12 @@ export default function Profile() {
                   <Button
                     type="submit"
                     colorScheme="blue"
-                    size="lg"
+                    size={{ base: "md", md: "lg" }}
                     isLoading={isSubmitting}
                     loadingText="Updating..."
                     w="full"
-                    mt="4"
+                    mt={{ base: "4", md: "4" }}
+                    fontSize={{ base: "md", md: "md" }}
                   >
                     Update Profile
                   </Button>
@@ -384,18 +433,21 @@ export default function Profile() {
 
           {/* Action Buttons */}
           <Stack
-            direction={{ base: "column", md: "row" }}
-            spacing="4"
+            direction={{ base: "column", sm: "row" }}
+            spacing={{ base: "3", md: "4" }}
             w="full"
-            maxW="md"
+            maxW={{ base: "full", sm: "md" }}
+            px={{ base: "0", sm: "0" }}
           >
             <Button
               as={RouterLink}
               to="/tasks"
               colorScheme="green"
               variant="solid"
-              size="lg"
+              size={{ base: "md", md: "lg" }}
               flex="1"
+              fontSize={{ base: "sm", md: "md" }}
+              minH={{ base: "10", md: "12" }}
             >
               View Tasks
             </Button>
@@ -403,8 +455,10 @@ export default function Profile() {
               onClick={handleLogout}
               colorScheme="gray"
               variant="solid"
-              size="lg"
+              size={{ base: "md", md: "lg" }}
               flex="1"
+              fontSize={{ base: "sm", md: "md" }}
+              minH={{ base: "10", md: "12" }}
             >
               Logout
             </Button>
@@ -412,8 +466,10 @@ export default function Profile() {
               onClick={onOpen}
               colorScheme="red"
               variant="outline"
-              size="lg"
+              size={{ base: "md", md: "lg" }}
               flex="1"
+              fontSize={{ base: "sm", md: "md" }}
+              minH={{ base: "10", md: "12" }}
             >
               Delete Account
             </Button>

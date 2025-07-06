@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import { dbConnect } from './libs/dbConnect.js';
 import userRouter from './routes/user.route.js';
 import cldRouter from './routes/cloudinary.route.js';
+import taskRouter from './routes/task.route.js';
 import { errorHandler } from './libs/middleware.js';
 
 const app = express();
@@ -19,10 +20,10 @@ const __dirname = path.dirname(__filename);
 
 // Enable CORS for all routes
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Middleware for parsing JSON and cookies
@@ -43,10 +44,11 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 // Routes
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/image', cldRouter);
+app.use('/api/v1/tasks', taskRouter);
 
 app.get('/', (req, res) => {
     res.status(200).json({
-        message: 'Welcome to the Taskly!',
+        message: 'Welcome to the Taskzy!',
         version: '1.0.0',
         endpoints: {
             users: '/api/v1/users',

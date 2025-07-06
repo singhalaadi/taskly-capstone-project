@@ -11,11 +11,11 @@ cloudinary.config({
 const cldUpload = async (imagePath) => {
     const options = {
         use_filename: true,
-        unique_filename: false, 
+        unique_filename: false,
         overwrite: true,
-        folder: 'taskly-avatars',
+        folder: 'taskzy-avatars',
     };
-    
+
     try {
         const result = await cloudinary.uploader.upload(imagePath, options);
         return result.secure_url;
@@ -29,40 +29,40 @@ export const addImage = async (req, res, next) => {
     try {
         // Check if image file exists
         if (!req.files || !req.files.image) {
-            return res.status(400).json({ 
-                status: 'error', 
-                message: 'No image file provided' 
+            return res.status(400).json({
+                status: 'error',
+                message: 'No image file provided'
             });
         }
 
         const { data, mimetype } = req.files.image;
-        
+
         // Validate file type
         if (!mimetype.startsWith('image/')) {
-            return res.status(400).json({ 
-                status: 'error', 
-                message: 'File must be an image' 
+            return res.status(400).json({
+                status: 'error',
+                message: 'File must be an image'
             });
         }
 
         // Convert to base64
         const base64String = Buffer.from(data).toString('base64');
         const withPrefix = `data:${mimetype};base64,${base64String}`;
-        
+
         // Upload to Cloudinary
         const imageUrl = await cldUpload(withPrefix);
-        
-        return res.status(200).json({ 
-            status: 'success', 
+
+        return res.status(200).json({
+            status: 'success',
             imageUrl,
             message: 'Image uploaded successfully'
         });
-        
+
     } catch (error) {
         console.error('Image upload error:', error);
-        next({ 
-            status: 500, 
-            error: error.message || 'Image upload failed' 
+        next({
+            status: 500,
+            error: error.message || 'Image upload failed'
         });
     }
 };

@@ -18,9 +18,9 @@ router.post('/login', login);             // POST /api/v1/users/login
 router.post('/logout', logout);           // POST /api/v1/users/logout
 
 // CRUD routes
-router.get('/',verifyToken, getAllUsers);             // GET /api/v1/users
-router.get('/:id',verifyToken, getUser);             // GET /api/v1/users/:id
-router.patch('/update/:id',verifyToken, updateUser);  // PATCH /api/v1/users/update/:id
-router.delete('/delete/:id',verifyToken, deleteUser); // DELETE /api/v1/users/delete/:id
+router.get('/', verifyToken, getAllUsers);             // GET /api/v1/users
+router.get('/:id', verifyToken, getUser);             // GET /api/v1/users/:id
+router.patch('/update/:id', verifyToken, updateUser);  // PATCH /api/v1/users/update/:id
+router.delete('/delete/:id', verifyToken, deleteUser); // DELETE /api/v1/users/delete/:id
 
 export default router;

@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import {ChakraProvider} from '@chakra-ui/react';
-import { Toaster } from 'react-hot-toast';
-import UserProvider from './context/UserProvider';
-import PrivateRoute from './components/PrivateRoute';
+import { ChakraProvider } from "@chakra-ui/react";
+import { Toaster } from "react-hot-toast";
+import UserProvider from "./context/UserProvider";
+import PrivateRoute from "./components/PrivateRoute";
 
 import Profile from "./pages/Profile";
 import Home from "./pages/Home";

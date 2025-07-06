@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { API_BASE_URL } from "../util.js";
+import { API_BASE_URL } from "../utils/api.js";
 import { useUser } from "../context/UserContext.js";
 import {
   FormControl,
@@ -9,13 +9,11 @@ import {
   Button,
   Text,
   Box,
-  Flex,
   Heading,
   Stack,
   FormErrorMessage,
   Container,
   VStack,
-  HStack,
   Icon,
   InputGroup,
   InputLeftElement,
@@ -56,7 +54,7 @@ export default function Register() {
       if (response.ok) {
         const result = await response.json();
         console.log("User registered successfully!");
-        toast.success("Welcome to Taskly! 🎉");
+        toast.success("Welcome to Taskzy! 🎉");
         updateUser(result.user);
         navigate("/profile");
       } else {
@@ -72,49 +70,43 @@ export default function Register() {
 
   return (
     <Box
-      h="100vh" // Changed from minH="100vh" to fit viewport better
+      h="100vh"
       bgGradient={bgGradient}
       display="flex"
       alignItems="center"
-      justifyContent="center" // Added for better centering
-      py="8" // Reduced from py="12"
+      justifyContent="center"
+      py="8"
     >
       <Container maxW="md">
         <Box
           bg={cardBg}
           borderRadius="2xl"
           boxShadow="2xl"
-          p="6" // Reduced from p="8" for more compact design
+          p="6"
           transform="scale(1)"
           _hover={{ transform: "scale(1.02)" }}
           transition="all 0.2s"
-          maxH="90vh" // Prevent exceeding viewport
-          overflowY="auto" // Add scroll if needed
+          maxH="90vh"
+          overflowY="auto"
         >
-          {/* Header - More Compact */}
+          {/* Header*/}
           <VStack spacing="4" mb="6">
             {" "}
-            {/* Reduced spacing */}
-            <Box
-              bg="blue.500"
-              p="3" // Reduced from p="4"
-              borderRadius="full"
-              color="white"
-            >
-              <Icon as={FaUserPlus} boxSize="6" />{" "}
-              {/* Reduced from boxSize="8" */}
+            {/*  */}
+            <Box bg="blue.500" p="3" borderRadius="full" color="white">
+              <Icon as={FaUserPlus} boxSize="6" />
             </Box>
             <VStack spacing="1">
               {" "}
-              {/* Reduced spacing */}
+              {/*  */}
               <Heading size="md" textAlign="center">
                 {" "}
-                {/* Reduced from size="lg" */}
-                Join Taskly
+                {/*  */}
+                Join Taskzy
               </Heading>
               <Text color={textColor} textAlign="center" fontSize="sm">
                 {" "}
-                {/* Added fontSize="sm" */}
+                {/* */}
                 Create your account and start organizing
               </Text>
             </VStack>
@@ -124,7 +116,6 @@ export default function Register() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing="4">
               {" "}
-              {/* Reduced from spacing="5" */}
               {/* Username Field */}
               <FormControl isInvalid={errors.username}>
                 <InputGroup>
@@ -135,7 +126,7 @@ export default function Register() {
                     id="username"
                     type="text"
                     placeholder="Enter your username"
-                    size="md" // Changed from size="lg"
+                    size="md"
                     borderRadius="lg"
                     focusBorderColor="blue.500"
                     _hover={{ borderColor: "blue.300" }}
@@ -151,7 +142,6 @@ export default function Register() {
                 </InputGroup>
                 <FormErrorMessage fontSize="xs">
                   {" "}
-                  {/* Added fontSize="xs" */}
                   {errors.username && errors.username.message}
                 </FormErrorMessage>
               </FormControl>
@@ -165,7 +155,7 @@ export default function Register() {
                     id="email"
                     type="email"
                     placeholder="Enter your email"
-                    size="md" // Changed from size="lg"
+                    size="md"
                     borderRadius="lg"
                     focusBorderColor="blue.500"
                     _hover={{ borderColor: "blue.300" }}
@@ -181,7 +171,6 @@ export default function Register() {
                 </InputGroup>
                 <FormErrorMessage fontSize="xs">
                   {" "}
-                  {/* Added fontSize="xs" */}
                   {errors.email && errors.email.message}
                 </FormErrorMessage>
               </FormControl>
@@ -195,7 +184,7 @@ export default function Register() {
                     id="password"
                     type="password"
                     placeholder="Create a password"
-                    size="md" // Changed from size="lg"
+                    size="md" 
                     borderRadius="lg"
                     focusBorderColor="blue.500"
                     _hover={{ borderColor: "blue.300" }}
@@ -211,7 +200,6 @@ export default function Register() {
                 </InputGroup>
                 <FormErrorMessage fontSize="xs">
                   {" "}
-                  {/* Added fontSize="xs" */}
                   {errors.password && errors.password.message}
                 </FormErrorMessage>
               </FormControl>
@@ -219,7 +207,7 @@ export default function Register() {
               <Button
                 type="submit"
                 colorScheme="blue"
-                size="md" // Changed from size="lg"
+                size="md"
                 borderRadius="lg"
                 isLoading={isSubmitting}
                 loadingText="Creating Account..."
@@ -235,10 +223,8 @@ export default function Register() {
           {/* Footer */}
           <Box mt="4" textAlign="center">
             {" "}
-            {/* Reduced from mt="6" */}
             <Text color={textColor} fontSize="sm">
               {" "}
-              {/* Added fontSize="sm" */}
               Already have an account?{" "}
               <Link as={Link} to="/login">
                 <Text
