@@ -105,8 +105,9 @@ export const register = async (req, res, next) => {
             .cookie('taskzy_token', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
-                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+                sameSite: 'None',
+                maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days,
+                partitioned: true
             })
             .status(201)
             .json({
@@ -179,8 +180,9 @@ export const login = async (req, res, next) => {
             .cookie('taskzy_token', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
-                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+                sameSite: 'None',
+                maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+                partitioned: true
             })
             .status(200)
             .json({

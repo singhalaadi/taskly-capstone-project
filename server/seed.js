@@ -1,35 +1,21 @@
+// DEMO DATA ONLY - NOT REAL USERS OR PASSWORDS
+// This file contains sample data for demonstration purposes only
 import 'dotenv/config';
 import { dbConnect } from './libs/dbConnect.js';
 
 const users = [
     {
-        username: "aadi",
-        email: "aadi12@gmail.com",
-        password: "aadi123",
+        username: "demoUser",
+        email: "demoUser@example.com",
+        password: "demoUserPass",
         avatar: `${process.env.SERVER_URL || 'http://localhost:3000'}/assets/default-user-avatar.png`,
         createdAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
         updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
     },
     {
-        username: "john",
-        email: "john26@gmail.com",
-        password: "john123",
-        avatar: `${process.env.SERVER_URL || 'http://localhost:3000'}/assets/default-user-avatar.png`,
-        createdAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
-        updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-    },
-    {
-        username: "jane",
-        email: "jane45@gmail.com",
-        password: "jane231",
-        avatar: `${process.env.SERVER_URL || 'http://localhost:3000'}/assets/default-user-avatar.png`,
-        createdAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
-        updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-    },
-    {
-        username: "doe",
-        email: "doe67@gmail.com",
-        password: "doe234",
+        username: "demo1",
+        email: "demo1@example.com",
+        password: "demo456",
         avatar: `${process.env.SERVER_URL || 'http://localhost:3000'}/assets/default-user-avatar.png`,
         createdAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
         updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
@@ -39,7 +25,7 @@ const users = [
 // Update tasks in seed.js:
 const tasks = [
     {
-        title: "Complete project report",
+        title: "Demo Task: Complete project report",
         description: "Finish the final report for the project by end of the week.",
         completed: false,
         priority: "high",
@@ -48,7 +34,7 @@ const tasks = [
         updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
     },
     {
-        title: "Prepare presentation slides",
+        title: "Demo Task: Prepare presentation slides",
         description: "Create slides for the upcoming presentation next Monday.",
         completed: false,
         priority: "medium",
@@ -57,7 +43,7 @@ const tasks = [
         updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
     },
     {
-        title: "Team meeting",
+        title: "Demo Task: Team meeting",
         description: "Schedule a team meeting to discuss project updates.",
         completed: true,
         priority: "low",
@@ -84,9 +70,9 @@ async function seedDatabase() {
         console.log('[seed]', 'Seeding Users Done');
 
         // Seeding Tasks
-        tasks[0].owner = result.insertedIds[1]; // to john
-        tasks[1].owner = result.insertedIds[1]; // to john
-        tasks[2].owner = result.insertedIds[1]; // to john
+        tasks[0].owner = result.insertedIds[0]; // to john
+        tasks[1].owner = result.insertedIds[0]; // to john
+        tasks[2].owner = result.insertedIds[0]; // to john
 
 
         collection = db.collection('tasks');

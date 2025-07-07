@@ -80,9 +80,9 @@ export default function Login() {
   };
 
   const fillDemoCredentials = () => {
-    setValue("email", "john26@gmail.com");
-    setValue("password", "john123");
-    toast.success("Demo credentials filled!");
+    setValue("email", "demoUser@example.com");
+    setValue("password", "demoUserPass");
+    toast.success("Demo user credentials filled!");
   };
 
   const togglePasswordVisibility = () => {
@@ -150,17 +150,17 @@ export default function Login() {
             <Text fontSize="xs" fontWeight="semibold" color="blue.800" mb="1">
               {" "}
               {/* Smaller text */}
-              🚀 Demo Credentials (Click to fill):
+              🚀 Demo User Credentials (Click to fill):
             </Text>
             <Text fontSize="xs" color="blue.600">
               {" "}
               {/* Smaller text */}
-              📧 Email: john26@gmail.com
+              📧 Email: demoUser@example.com
             </Text>
             <Text fontSize="xs" color="blue.600">
               {" "}
               {/* Smaller text */}
-              🔒 Password: john123
+              🔒 Password: demoUserPass
             </Text>
             <Text fontSize="10px" color="blue.500" mt="1" fontStyle="italic">
               {" "}

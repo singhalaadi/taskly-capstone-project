@@ -9,7 +9,7 @@ import { dbConnect } from './libs/dbConnect.js';
 import userRouter from './routes/user.route.js';
 import cldRouter from './routes/cloudinary.route.js';
 import taskRouter from './routes/task.route.js';
-import { errorHandler } from './libs/middleware.js';
+import { errorHandler } from './middlewares/middleware.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -78,7 +78,7 @@ app.use((req, res) => {
     });
 });
 
-app.listen(PORT, async () => {
+app.listen(PORT, '0.0.0.0', async () => {
     try {
         await dbConnect();
         console.log(`Database connected successfully`);

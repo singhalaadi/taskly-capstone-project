@@ -6,7 +6,7 @@ import {
     updateTask,
     deleteTask,
 } from '../controllers/task.controller.js';
-import { verifyToken } from '../libs/middleware.js';
+import { verifyToken } from '../middlewares/middleware.js';
 
 const router = express.Router();
 router.post('/create', verifyToken, createTask);       // POST /api/v1/tasks/create
