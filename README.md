@@ -58,8 +58,8 @@ A modern, full-stack task management application built with React, Node.js, Expr
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/singhalaadi/taskly-capstone-project.git
-cd taskly
+git clone https://github.com/singhalaadi/taskzy-capstone-project.git
+cd taskzy
 ```
 
 ### 2. Backend Setup
@@ -70,7 +70,7 @@ npm install
 
 Create `.env` file in server directory:
 ```env
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
+MONGODB_URI=your_mongodb_connection_string
 MONGODB_DATABASE=taskzy
 PORT=3000
 SESSION_SECRET=your_super_secret_key_here
@@ -139,8 +139,7 @@ taskzy/
 │   ├── controllers/       # Route controllers
 │   ├── libs/             # Database connection
 │   ├── routes/           # API routes
-│   ├── middleware/       # Custom middleware
-│   ├── models/           # Data models (if using ODM)
+│   ├── middlewares/       # Custom middleware
 │   ├── package.json
 │   └── server.js         # Main server file
 └── README.md
