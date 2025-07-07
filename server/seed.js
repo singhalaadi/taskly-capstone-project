@@ -70,9 +70,9 @@ async function seedDatabase() {
         console.log('[seed]', 'Seeding Users Done');
 
         // Seeding Tasks
-        tasks[0].owner = result.insertedIds[0]; // to john
-        tasks[1].owner = result.insertedIds[0]; // to john
-        tasks[2].owner = result.insertedIds[0]; // to john
+        tasks[0].owner = result.insertedIds[0]; // to demoUser
+        tasks[1].owner = result.insertedIds[0]; // to demoUser
+        tasks[2].owner = result.insertedIds[0]; // to demoUser
 
 
         collection = db.collection('tasks');
