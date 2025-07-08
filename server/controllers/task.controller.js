@@ -2,12 +2,15 @@ import { dbConnect } from '../libs/dbConnect.js';
 import { ObjectId } from 'mongodb';
 import { isDemoUser } from '../utils/authHelpers.js';
 
-const db = await dbConnect();
-const collection = db.collection('tasks');
+const getTasksCollection = async () => {
+  const db = await dbConnect();
+  return db.collection('tasks');
+};
 
 // Get all tasks for a user
 export const getTasksByUser = async (req, res, next) => {
     try {
+        const collection = await getTasksCollection();
         const userId = req.params.id;
 
         if (!ObjectId.isValid(userId)) {
@@ -25,6 +28,7 @@ export const getTasksByUser = async (req, res, next) => {
 // Create a new task
 export const createTask = async (req, res, next) => {
     try {
+        const collection = await getTasksCollection();
         const { title, description, priority = 'medium', dueDate, completed } = req.body;
         const userId = req.user.id;
         const userEmail = req.user.email;
@@ -58,6 +62,7 @@ export const createTask = async (req, res, next) => {
 // Update a task
 export const updateTask = async (req, res, next) => {
     try {
+        const collection = await getTasksCollection();
         const taskId = req.params.id;
         const userId = req.user.id;
         const updates = req.body;
@@ -93,6 +98,7 @@ export const updateTask = async (req, res, next) => {
 // Delete a task
 export const deleteTask = async (req, res, next) => {
     try {
+        const collection = await getTasksCollection();
         const taskId = req.params.id;
         const userId = req.user.id;
         const userEmail = req.user.email;
@@ -140,6 +146,7 @@ export const deleteTask = async (req, res, next) => {
 // Get a single task
 export const getTask = async (req, res, next) => {
     try {
+        const collection = await getTasksCollection();
         const taskId = req.params.id;
         const userId = req.user.id;
         const userEmail = req.user.email;
