@@ -8,7 +8,7 @@ const users = [
         username: "demoUser",
         email: "demoUser@example.com",
         password: "demoUserPass",
-        avatar: `${process.env.SERVER_URL || 'http://localhost:3000'}/assets/default-user-avatar.png`,
+        avatar: `https://taskzy-production.up.railway.app/assets/default-user-avatar.png`,
         createdAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
         updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
     },
@@ -16,7 +16,7 @@ const users = [
         username: "demo1",
         email: "demo1@example.com",
         password: "demo456",
-        avatar: `${process.env.SERVER_URL || 'http://localhost:3000'}/assets/default-user-avatar.png`,
+        avatar: `https://taskzy-production.up.railway.app/assets/default-user-avatar.png`,
         createdAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
         updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
     }

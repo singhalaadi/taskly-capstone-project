@@ -52,7 +52,7 @@ export default function Profile() {
   } = useForm({
     defaultValues: {
       avatar:
-        user?.avatar || "http://localhost:3000/assets/default-user-avatar.png",
+        user?.avatar || `${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000'}/assets/default-user-avatar.png`,
       username: user?.username || "",
       email: user?.email || "",
     },

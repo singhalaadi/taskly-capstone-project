@@ -60,9 +60,11 @@ export function AvatarUploader({ imageUrl, onFieldChange, setFiles }) {
               cursor="pointer"
               src={
                 imageUrl ||
-                "http://localhost:3000/assets/default-user-avatar.png"
+                `${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000'}/assets/default-user-avatar.png`
               }
-              fallbackSrc="http://localhost:3000/assets/default-user-avatar.png"
+              fallbackSrc={
+                `${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000'}/assets/default-user-avatar.png`
+              }
               border="3px solid"
               borderColor="blue.200"
             />
