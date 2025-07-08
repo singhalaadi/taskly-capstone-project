@@ -2,7 +2,7 @@
 
 A modern, full-stack task management application built with React, Node.js, Express, and MongoDB. Taskzy helps users organize their tasks with an intuitive interface, sorting capabilities, and secure user authentication.
 
-![Taskzy Preview](https://via.placeholder.com/800x400/4A90E2/FFFFFF?text=Taskzy+Task+Management)
+Live: ![Taskzy](https://taskzy-app.netlify.app/)
 
 ## ✨ Features
 
