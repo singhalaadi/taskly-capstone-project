@@ -5,7 +5,7 @@ import { useUser } from "../context/UserContext.js";
 import { API_BASE_URL } from "../utils/api.js";
 import { formatDateOnlyIST } from "../utils/dateHelpers";
 import TasksSkeleton from "../_skeletons/TasksSkeleton.jsx";
-import Pagination from "../components/pagination";
+import Pagination from "../components/Pagination.jsx";
 import { BsArrowUp, BsArrowDownUp } from "react-icons/bs";
 import {
   Badge,
