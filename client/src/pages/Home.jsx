@@ -8,7 +8,7 @@ import {
   Container,
   SimpleGrid,
   Icon,
-  Flex,
+  Link
 } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 import { useUser } from "../context/UserContext";
@@ -156,6 +156,36 @@ export default function Home() {
           </Container>
         </Box>
       )}
+
+      {/* Footer */}
+      <Box bg="gray.100" py="8" borderTop="1px" borderColor="gray.200">
+        <Container maxW="6xl">
+          <VStack spacing="4">
+            <Text fontSize="sm" color="gray.600" textAlign="center">
+              &copy; {new Date().getFullYear()} Taskzy. All rights reserved.
+            </Text>
+            <Text fontSize="sm" color="gray.500" textAlign="center">
+              Developed by Aaditya Singhal
+            </Text>
+            <HStack spacing="4" justifyContent="center">
+              <Link
+                href="https://github.com/singhalaadi"
+                isExternal
+                color="gray.600"
+                fontSize="sm"
+              >
+                GitHub
+              </Link>
+              <Link href="https://www.linkedin.com/in/aaditya-singhal26/" isExternal color="gray.600" fontSize="sm">
+                LinkedIn
+              </Link>
+              <Link as={RouterLink} to="/login" color="gray.600" fontSize="sm">
+                Login
+              </Link>
+            </HStack>
+          </VStack>
+        </Container>
+      </Box>
     </Box>
   );
 }

@@ -10,6 +10,7 @@ import userRouter from './routes/user.route.js';
 import cldRouter from './routes/cloudinary.route.js';
 import taskRouter from './routes/task.route.js';
 import { errorHandler } from './middlewares/middleware.js';
+import { populateUser } from './middlewares/populateUser.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,6 +30,9 @@ app.use(cors({
 // Middleware for parsing JSON and cookies
 app.use(cookieParser());
 app.use(express.json({ limit: '50mb' }));
+
+// Populate user information for all routes
+app.use(populateUser);
 
 // File upload middleware
 app.use(fileUpload({

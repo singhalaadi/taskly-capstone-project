@@ -31,7 +31,8 @@ const tasks = [
         priority: "high",
         dueDate: new Date(new Date().setDate(new Date().getDate() + 1)).toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
         createdAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
-        updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+        updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
+        isOriginalDemo: true 
     },
     {
         title: "Demo Task: Prepare presentation slides",
@@ -40,7 +41,8 @@ const tasks = [
         priority: "medium",
         dueDate: new Date(new Date().setDate(new Date().getDate() + 1)).toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
         createdAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
-        updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+        updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
+        isOriginalDemo: true
     },
     {
         title: "Demo Task: Team meeting",
@@ -49,7 +51,8 @@ const tasks = [
         priority: "low",
         dueDate: new Date(new Date().setDate(new Date().getDate() + 1)).toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
         createdAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
-        updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+        updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
+        isOriginalDemo: true  
     }
 ];
 

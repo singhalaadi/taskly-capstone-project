@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams, Link as RouterLink, useNavigate } from "react-router-dom";
-import { API_BASE_URL } from "../utils/api.js";
+import { API_BASE_URL, apiRequest } from "../utils/api.js";
 import { formatDateOnlyIST } from "../utils/dateHelpers";
 import SingleTaskSkeleton from "../_skeletons/SingleTaskSkeleton.jsx";
 import { BsChevronLeft } from "react-icons/bs";
 import { useDisclosure } from "@chakra-ui/react";
 import DeleteConfirmation from "../components/DeleteConfirmation";
+import DemoUserWarning from "../components/DemoUserWarning";
+import { useUser } from "../context/UserContext.js";
 import toast from "react-hot-toast";
 import {
   Box,
@@ -23,22 +25,35 @@ import {
 export default function SingleTask() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [task, setTask] = useState();
+  const [loading, setLoading] = useState(true);
+  const [showDemoWarning, setShowDemoWarning] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useUser();
+
+  // Check if user is a demo user
+  const isDemoUser =
+    user?.email?.endsWith("@example.com") || user?.email?.includes("demo");
+
+  // Determine if this is an original demo task or user-created task
+  const isOriginalDemoTask = task?.isOriginalDemo;
 
   useEffect(() => {
     const fetchTask = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/tasks/${id}`, {
-          credentials: "include",
-        });
-        if (res.ok) {
-          const data = await res.json();
-          const taskData = data.task || data;
+        const result = await apiRequest(`/tasks/${id}`);
+
+        if (result.ok) {
+          const taskData = result.data.task || result.data;
           setTask(taskData);
+        } else {
+          toast.error("Failed to load task");
         }
       } catch (error) {
         console.error("Fetch error:", error);
+        toast.error("Error loading task");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -49,18 +64,30 @@ export default function SingleTask() {
 
   const handleDeleteTask = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/tasks/${id}`, {
+      const result = await apiRequest(`/tasks/${id}`, {
         method: "DELETE",
-        credentials: "include",
       });
 
-      const data = await res.json();
-
-      if (res.status === 200) {
-        toast.success(data.message);
+      if (result.ok) {
+        toast.success(result.data.message || "Task deleted successfully");
         navigate("/tasks");
       } else {
-        toast.error(data.message);
+        // Special handling for demo user restrictions
+        if (result.data?.isDemoUser) {
+          toast.error(
+            "Demo users cannot delete tasks. This is a demo account restriction.",
+            {
+              duration: 5000,
+              icon: "🔒",
+            }
+          );
+          setShowDemoWarning(true);
+          onClose();
+        } else {
+          toast.error(
+            result.data?.message || result.error || "Failed to delete task"
+          );
+        }
       }
     } catch (error) {
       console.error("Delete error:", error);
@@ -68,12 +95,18 @@ export default function SingleTask() {
     }
   };
 
-  if (!task) {
+  if (loading || !task) {
     return <SingleTaskSkeleton />;
   }
 
   return (
     <Box p="3" maxW="lg" mx="auto">
+      {/* Demo user warning */}
+      <DemoUserWarning
+        isVisible={showDemoWarning}
+        onClose={() => setShowDemoWarning(false)}
+      />
+
       <Link
         as={RouterLink}
         to="/tasks"
@@ -139,8 +172,18 @@ export default function SingleTask() {
         >
           Edit Task
         </Button>
-        <Button colorScheme="red" onClick={onOpen}>
+        <Button
+          colorScheme="red"
+          onClick={onOpen}
+          isDisabled={isDemoUser && isOriginalDemoTask}
+          title={
+            isDemoUser && isOriginalDemoTask
+              ? "Demo users cannot delete original demo tasks"
+              : ""
+          }
+        >
           Delete Task
+          {isDemoUser && isOriginalDemoTask && " (Demo Restriction)"}
         </Button>
       </Flex>
 

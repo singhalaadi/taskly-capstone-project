@@ -1,5 +1,6 @@
 import { dbConnect } from '../libs/dbConnect.js';
 import { ObjectId } from 'mongodb';
+import { isDemoUser } from '../utils/authHelpers.js';
 
 const db = await dbConnect();
 const collection = db.collection('tasks');
@@ -26,6 +27,7 @@ export const createTask = async (req, res, next) => {
     try {
         const { title, description, priority = 'medium', dueDate, completed } = req.body;
         const userId = req.user.id;
+        const userEmail = req.user.email;
 
         if (!title) {
             return res.status(400).json({ error: 'Task title is required' });
@@ -39,7 +41,8 @@ export const createTask = async (req, res, next) => {
             completed: completed || false,
             owner: new ObjectId(userId),
             createdAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
-            updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+            updatedAt: new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }),
+            isOriginalDemo: false
         };
 
         const result = await collection.insertOne(task);
@@ -63,12 +66,10 @@ export const updateTask = async (req, res, next) => {
             return res.status(400).json({ error: 'Invalid task ID' });
         }
 
-        // Convert dueDate to Date if provided
         if (updates.dueDate) {
             updates.dueDate = new Date(updates.dueDate).toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
         }
 
-        // Add updatedAt timestamp
         updates.updatedAt = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
 
         const result = await collection.updateOne(
@@ -94,6 +95,28 @@ export const deleteTask = async (req, res, next) => {
     try {
         const taskId = req.params.id;
         const userId = req.user.id;
+        const userEmail = req.user.email;
+
+        // Check if user is a demo user
+        if (isDemoUser(userEmail)) {
+            const task = await collection.findOne({
+                _id: new ObjectId(taskId),
+                owner: new ObjectId(userId)
+            });
+
+            if (!task) {
+                return res.status(404).json({ error: 'Task not found' });
+            }
+
+            // Prevent deletion if it's an original demo task
+            if (task.isOriginalDemo) {
+                return res.status(403).json({
+                    error: 'Demo users cannot delete original demo tasks',
+                    isDemoUser: true,
+                    message: 'Demo users can only delete tasks they create themselves'
+                });
+            }
+        }
 
         if (!ObjectId.isValid(taskId)) {
             return res.status(400).json({ error: 'Invalid task ID' });
@@ -119,6 +142,7 @@ export const getTask = async (req, res, next) => {
     try {
         const taskId = req.params.id;
         const userId = req.user.id;
+        const userEmail = req.user.email;
 
         if (!ObjectId.isValid(taskId)) {
             return res.status(400).json({ error: 'Invalid task ID' });
@@ -133,7 +157,15 @@ export const getTask = async (req, res, next) => {
             return res.status(404).json({ error: 'Task not found' });
         }
 
-        res.status(200).json({ task });
+        // Include information about whether this is a demo user
+        const responseData = {
+            task,
+            userInfo: {
+                isDemoUser: isDemoUser(userEmail)
+            }
+        };
+
+        res.status(200).json(responseData);
     } catch (error) {
         next({ status: 500, error });
     }
